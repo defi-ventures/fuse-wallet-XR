@@ -4,9 +4,12 @@ PODS:
     - Flutter
     - MTBBarcodeScanner
     - SwiftProtobuf
+  - BestLogger (0.0.3)
+  - BigInt (5.2.0)
   - Branch (0.35.0)
   - contacts_service (0.2.2):
     - Flutter
+  - CryptoSwift (1.0.0)
   - device_info (0.0.1):
     - Flutter
   - Firebase/Auth (6.26.0):
@@ -83,6 +86,8 @@ PODS:
   - flutter_udid (0.0.1):
     - Flutter
     - SAMKeychain
+  - flutter_unity_widget (0.0.1):
+    - Flutter
   - flutter_webview_plugin (0.0.1):
     - Flutter
   - FMDB (2.7.5):
@@ -140,6 +145,15 @@ PODS:
     - Flutter
     - PhoneNumberKit/PhoneNumberKitCore (~> 3.2.0)
   - PhoneNumberKit/PhoneNumberKitCore (3.2.0)
+  - PromiseKit (6.13.1):
+    - PromiseKit/CorePromise (= 6.13.1)
+    - PromiseKit/Foundation (= 6.13.1)
+    - PromiseKit/UIKit (= 6.13.1)
+  - PromiseKit/CorePromise (6.13.1)
+  - PromiseKit/Foundation (6.13.1):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.13.1):
+    - PromiseKit/CorePromise
   - PromisesObjC (1.2.10)
   - Protobuf (3.13.0)
   - SAMKeychain (1.5.3)
@@ -151,7 +165,25 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - Starscream (3.1.1)
   - SwiftProtobuf (1.12.0)
+  - Torus-fetchNodeDetails (0.0.15):
+    - BestLogger (~> 0.0.1)
+    - Torus-web3swift (~> 3.0.2)
+  - Torus-utils (0.0.21):
+    - BestLogger (~> 0.0.1)
+    - PromiseKit/Foundation (~> 6.0)
+    - Torus-fetchNodeDetails (~> 0.0.1)
+  - Torus-web3swift (3.0.6):
+    - BigInt (~> 5.0)
+    - CryptoSwift (~> 1.0.0)
+    - PromiseKit (~> 6.13.1)
+    - Starscream (~> 3.1.0)
+  - torus_direct (0.0.1):
+    - BestLogger (~> 0.0.1)
+    - Flutter
+    - PromiseKit
+    - Torus-utils (~> 0.0.1)
   - url_launcher (0.0.1):
     - Flutter
 
@@ -168,6 +200,7 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_segment (from `.symlinks/plugins/flutter_segment/ios`)
   - flutter_udid (from `.symlinks/plugins/flutter_udid/ios`)
+  - flutter_unity_widget (from `.symlinks/plugins/flutter_unity_widget/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -179,12 +212,16 @@ DEPENDENCIES:
   - phone_number (from `.symlinks/plugins/phone_number/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - torus_direct (from `.symlinks/plugins/torus_direct/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
   trunk:
     - Analytics
+    - BestLogger
+    - BigInt
     - Branch
+    - CryptoSwift
     - Firebase
     - FirebaseAnalyticsInterop
     - FirebaseAuth
@@ -204,11 +241,16 @@ SPEC REPOS:
     - MTBBarcodeScanner
     - nanopb
     - PhoneNumberKit
+    - PromiseKit
     - PromisesObjC
     - Protobuf
     - SAMKeychain
     - Segment-Branch
+    - Starscream
     - SwiftProtobuf
+    - Torus-fetchNodeDetails
+    - Torus-utils
+    - Torus-web3swift
 
 EXTERNAL SOURCES:
   barcode_scan:
@@ -235,6 +277,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_segment/ios"
   flutter_udid:
     :path: ".symlinks/plugins/flutter_udid/ios"
+  flutter_unity_widget:
+    :path: ".symlinks/plugins/flutter_unity_widget/ios"
   flutter_webview_plugin:
     :path: ".symlinks/plugins/flutter_webview_plugin/ios"
   google_maps_flutter:
@@ -257,14 +301,19 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
+  torus_direct:
+    :path: ".symlinks/plugins/torus_direct/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
   Analytics: ebdc0c3ed93684d10c898f57886e0ce7fbecc240
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
+  BestLogger: 70475db073dfab3ec1ba9b58b0bb78126b068eee
+  BigInt: f668a80089607f521586bbe29513d708491ef2f7
   Branch: 9a37f707974a128c37829033c49018b79c7e7a2d
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
+  CryptoSwift: d81eeaa59dc5a8d03720fe919a6fd07b51f7439f
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
   firebase_auth: c42c06a212439824b5da53437da905931e8e6b9a
@@ -285,6 +334,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_segment: 0357d36d6b066d5d255cda46d2f217b55110af95
   flutter_udid: c9d59b0a440e137882faa5cf53a3501e906fb8c2
+  flutter_unity_widget: d25555a08e6d76bdcd3c8d17edaeac738b038322
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
@@ -303,15 +353,21 @@ SPEC CHECKSUMS:
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   phone_number: b545f5b7d9711bec0f020c7df43ae5a82119f4ad
   PhoneNumberKit: df411d46177d1492da84e10b6c093846dd861452
+  PromiseKit: 28fda91c973cc377875d8c0ea4f973013c05b6db
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   SAMKeychain: 483e1c9f32984d50ca961e26818a534283b4cd5c
   Segment-Branch: cf1bd47ecd41c7867231854e0dc4b9f3bf1a7100
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftProtobuf: 4ef85479c18ca85b5482b343df9c319c62bda699
+  Torus-fetchNodeDetails: fe681ec696eb49b36e7c1dcc6ede2c18dae7aa16
+  Torus-utils: 4550e08dc5229dd3fffbda31c9c91b4892a188ed
+  Torus-web3swift: 793aa9b84ce7eaaf8212624db9a01d2bff74b96d
+  torus_direct: 73d8c7174fc675e723a1267c1ad207d5cc1fbbd4
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: 1bd3080dfcf005dd2573e3fbaa7d40a7220c6bd9
 
 COCOAPODS: 1.9.3

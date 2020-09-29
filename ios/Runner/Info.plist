@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -18,8 +20,6 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,14 +39,18 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Not in use right now</string>
 	<key>NSCalendarsUsageDescription</key>
@@ -63,6 +67,8 @@
 	<string>Let us access your location when your using the app to allow easy sending to people nearby.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Not in use right now</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Not in use right now</string>
 	<key>UILaunchStoryboardName</key>
@@ -88,15 +94,11 @@
 	<string>fuseio.app.link</string>
 	<key>branch_key</key>
 	<string>key_live_aaSvQXmuELUQfsYeG4UfWemnqEiq04hr</string>
-	<key>com.claimsforce.segment.WRITE_KEY</key>
-	<string>n2yoAnpD1bpDmAXBhUloLYpS1U5f7W09</string>
 	<key>com.claimsforce.segment.TRACK_APPLICATION_LIFECYCLE_EVENTS</key>
 	<false/>
+	<key>com.claimsforce.segment.WRITE_KEY</key>
+	<string>n2yoAnpD1bpDmAXBhUloLYpS1U5f7W09</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-    <string>itms</string>
-	</array>
 </dict>
 </plist>
