@@ -14,33 +14,33 @@ class ObjectFromUnity extends UnityEvent {
   ObjectFromUnity(this.content, this.lat, this.lng, this.alt);
 }
 
-/*  Flutter sends the object content to the backend in this schema.
-    {
-        author: string,
-        content: string,
-        location: {
-            latitude: number,
-            longitude: number
-        }
-    }
- */
+class LoadObjectsForLocation extends UnityEvent {
+  final Map<String, double> location;
+
+  LoadObjectsForLocation(this.location);
+}
 
 class SaveUnityObject extends UnityEvent {
   final String id;
   final String user;
-  final String content;
   final double lat;
   final double lng;
+  final double alt;
+  final double rotX;
+  final double rotY;
+  final double rotZ;
 
-  SaveUnityObject(this.id, this.user, this.content, this.lat, this.lng);
+  SaveUnityObject(this.id, this.user, this.lat, this.lng, this.alt, this.rotX,
+      this.rotY, this.rotZ);
 }
 
 //unity sends the user's location to the flutter to get the objects near the user
 class LocationFromUnity extends UnityEvent {
   final double lat;
   final double lng;
+  final double alt;
 
-  LocationFromUnity(this.lat, this.lng);
+  LocationFromUnity(this.lat, this.lng, this.alt);
 }
 
 // The backend should have an API that retrieves the user location and

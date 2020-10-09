@@ -1,30 +1,22 @@
 import 'dart:async';
 
+import 'package:fusecash/worldxr/src/data/wallet_object_state.dart';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 part 'wallet_event.dart';
 part 'wallet_state.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
-  WalletBloc() : super(WalletInitial());
-
-  String _address;
-  List<dynamic> _holdings;
-  String _ethBalance;
-
-  get address => _address;
-  get holdings => _holdings;
-  get ethBalance => _ethBalance;
-
-  setWalletInfo(String address, String ethBalance, List<dynamic> holdings) {
-    _holdings = holdings;
-    _ethBalance = ethBalance;
-    _address = address;
-  }
+  WalletBloc() : super(WalletState.initial());
 
   @override
   Stream<WalletState> mapEventToState(
     WalletEvent event,
-  ) async* {}
+  ) async* {
+    if (event is SetWallet) {
+      yield WalletState.setWallet(event.walletObjectState);
+    }
+  }
 }

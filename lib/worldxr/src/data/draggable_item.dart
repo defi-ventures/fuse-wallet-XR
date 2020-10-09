@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class DraggableItem {
+class XRItem {
   String title;
   UnityObjectType unityObjectType;
   Widget image;
 
-  DraggableItem(this.title, this.unityObjectType, this.image);
+  XRItem(this.title, this.unityObjectType, this.image);
 }
 
 enum UnityObjectType { zombie, box, text, image, none }

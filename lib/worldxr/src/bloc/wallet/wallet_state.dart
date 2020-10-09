@@ -1,6 +1,15 @@
 part of 'wallet_bloc.dart';
 
-@immutable
-abstract class WalletState {}
+class WalletState extends Equatable {
+  final WalletObjectState walletObjectState;
 
-class WalletInitial extends WalletState {}
+  const WalletState._({this.walletObjectState});
+
+  const WalletState.setWallet(WalletObjectState walletObjectState)
+      : this._(walletObjectState: walletObjectState);
+
+  const WalletState.initial() : this._(walletObjectState: null);
+
+  @override
+  List<Object> get props => [walletObjectState];
+}

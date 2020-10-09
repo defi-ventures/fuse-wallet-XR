@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:fusecash/worldxr/src/bloc/auth/auth_bloc.dart';
 import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:fusecash/worldxr/src/ui/style.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);

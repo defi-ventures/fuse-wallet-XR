@@ -1,6 +1,6 @@
+import 'package:fusecash/worldxr/src/ui/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fusecash/worldxr/src/ui/style.dart';
 
 class LoadingStateButton<LoadingState> extends StatelessWidget {
   final dynamic button;

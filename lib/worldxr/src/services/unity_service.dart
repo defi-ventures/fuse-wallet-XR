@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
-import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:fusecash/worldxr/src/data/unity_object.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 
 class UnityService {
   // saving unity data to backend
@@ -27,12 +27,21 @@ class UnityService {
   }
 
 //add object to mongoDB
-  Future<int> addObjectToMongo(UnityObject object, String fileName) async {
+  Future<int> addObjectToMongo(UnityObject object) async {
     try {
       Response response = await Dio().post("$serverIp/api/object", data: {
-        "s3_address": fileName,
-        "user": object.userID,
-        "location": {"type": "Point", "coordinates": object.location}
+        "id": object.id,
+        "user": object.userID ?? '5f7f2582fbfc4a971970eee1',
+        "location": {
+          "type": "Point",
+          "coordinates": [
+            object.location['lng'],
+            object.location['lat'],
+          ]
+        },
+        "rotX": object.rotX,
+        "rotY": object.rotY,
+        "rotZ": object.rotZ,
       });
       print(response.data);
       return response.statusCode;
@@ -42,20 +51,16 @@ class UnityService {
     }
   }
 
-//add object to S3
-  Future<String> addObjectToS3(UnityObject object) async {
+  Future<List<UnityObject>> getObjectsForLocation(
+      String lat, String lng) async {
+    // String locationHex = [lat,lng].toString().to
     try {
-      Response response = await Dio().post("$serverIp/api/object/s3", data: {
-        "fileName": object.id + '.json',
-        "user_id": object.userID,
-        "content": object.content,
-      });
+      Response response = await Dio().post(
+        "$serverIp/api/object/location/5b2e20202034332e37373933393237202c2020202d37392e34313438333020205d",
+      );
 
-      return response.data;
-    } catch (e) {
-      print(e);
-      return null;
-    }
+      print(response.data);
+    } catch (e) {}
   }
 
   // Sending messages to Unity from Flutter

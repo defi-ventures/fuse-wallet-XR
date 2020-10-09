@@ -1,34 +1,30 @@
 part of 'auth_bloc.dart';
 
-@immutable
-abstract class AuthState {}
+enum AuthStatus { authenticated, unauthenticated, unknown, loading }
 
-class AuthInitial extends AuthState {}
+class AuthState extends Equatable {
+  const AuthState._(
+      {this.status = AuthStatus.unknown,
+      this.user = User.empty,
+      this.privateKey = ''});
 
-class AuthLoadingState extends AuthState {}
+  const AuthState.unknown() : this._();
 
-class AuthErrorState extends AuthState {}
+  const AuthState.loading() : this._(status: AuthStatus.loading);
 
-class SignedUpState extends AuthState {
+  const AuthState.authenticated(User user, String privateKey)
+      : this._(
+            status: AuthStatus.authenticated,
+            user: user,
+            privateKey: privateKey);
+
+  const AuthState.unauthenticated()
+      : this._(status: AuthStatus.unauthenticated, privateKey: '');
+
+  final AuthStatus status;
+  final User user;
   final String privateKey;
-  final User user;
-  final WalletObjectState walletObjectState;
 
-  SignedUpState(this.privateKey, this.user, this.walletObjectState);
-}
-
-class SignedOutState extends AuthState {}
-
-class SignedInState extends AuthState {
-  final User user;
-  final String privateKey;
-  final WalletObjectState walletObjectState;
-
-  SignedInState(this.user, this.privateKey, this.walletObjectState);
-}
-
-class SignedInWithoutKeyState extends AuthState {
-  final User user;
-
-  SignedInWithoutKeyState(this.user);
+  @override
+  List<Object> get props => [status, user];
 }

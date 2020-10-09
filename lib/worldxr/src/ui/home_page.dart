@@ -1,21 +1,19 @@
+import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:fusecash/worldxr/src/bloc/auth/auth_bloc.dart';
 import 'package:fusecash/worldxr/src/bloc/unity/unity_bloc.dart';
-import 'package:fusecash/worldxr/src/bloc/wallet/wallet_bloc.dart';
-import 'package:fusecash/worldxr/src/constants.dart';
-import 'package:fusecash/worldxr/src/data/draggable_item.dart';
-import 'package:fusecash/worldxr/src/data/models/privateKey_model.dart';
 import 'package:fusecash/worldxr/src/data/user.dart';
 import 'package:fusecash/worldxr/src/locator.dart';
 import 'package:fusecash/worldxr/src/services/unity_service.dart';
 import 'package:fusecash/worldxr/src/ui/login_page.dart';
-import 'package:fusecash/worldxr/src/ui/style.dart';
 import 'package:fusecash/worldxr/src/ui/widgets/dialogs.dart';
-
-import 'package:provider/provider.dart';
+import 'package:crossplat_objectid/crossplat_objectid.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_unity_widget/flutter_unity_widget.dart';
+import 'package:fusecash/worldxr/src/ui/style.dart';
+import 'package:fusecash/worldxr/src/constants.dart';
+import 'package:fusecash/worldxr/src/data/draggable_item.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -32,133 +30,120 @@ class _HomePageState extends State<HomePage> {
   UnityBloc _unityBloc;
   UnityService _unityService = locator.get();
 
-  bool _loading = false;
-
   @override
   void initState() {
     super.initState();
-    _unityBloc = Provider.of<UnityBloc>(context, listen: false);
+    _unityBloc = BlocProvider.of<UnityBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    PrivateKeyModel _privateKeyModel = Provider.of<PrivateKeyModel>(context);
-    UserModel _userModel = Provider.of<UserModel>(context);
-    // ignore: close_sinks
-    WalletBloc walletBloc = BlocProvider.of<WalletBloc>(context);
-    return Scaffold(
-        body: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthLoadingState) {
-                setState(() {
-                  _loading = true;
-                });
-                return;
-              }
-              if (state is SignedInWithoutKeyState) {
-                _userModel.updateUser(state.user);
-              }
-
-              if (state is SignedInState) {
-                _privateKeyModel.setPrivateKey(state.privateKey);
-                _userModel.updateUser(state.user);
-                walletBloc.setWalletInfo(
-                    state.walletObjectState.address,
-                    state.walletObjectState.ethBalance,
-                    state.walletObjectState.holdings);
-              }
-
-              if (state is SignedOutState) {
-                _privateKeyModel.setPrivateKey(null);
-                _userModel.updateUser(null);
-              }
-
-              if (state is SignedUpState) {
-                _privateKeyModel.setPrivateKey(state.privateKey);
-                _userModel.updateUser(state.user);
-                walletBloc.setWalletInfo(
-                    state.walletObjectState.address,
-                    state.walletObjectState.ethBalance,
-                    state.walletObjectState.holdings);
-              }
-              setState(() {
-                _loading = false;
-              });
-            },
-            child: _loading
-                ? Center(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(AppColors.blue_grey),
-                    ),
-                  )
-                : _privateKeyModel.privateKey != null
-                    ? _homeContent(_userModel.user)
-                    : LoginPage()));
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, AuthState state) {
+        switch (state.status) {
+          case AuthStatus.authenticated:
+            return _homeContent(state.user);
+            break;
+          case AuthStatus.unauthenticated:
+            return LoginPage();
+            break;
+          case AuthStatus.unknown:
+            return LoginPage();
+            break;
+          case AuthStatus.loading:
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.blue_grey),
+                ),
+              ),
+            );
+            break;
+          default:
+            return LoginPage();
+        }
+      },
+    );
   }
 
   Widget _homeContent(User user) {
-    return Stack(
-      children: [
-        Column(
-          children: <Widget>[
-            Expanded(
-              flex: 4,
-              child: UnityWidget(
+    return BlocConsumer(
+      cubit: _unityBloc,
+      listener: (context, UnityState state) {
+        if (state.unityStatus == UnityStatus.locationRetrieved) {
+          _unityBloc.add(LoadObjectsForLocation(state.userLocation));
+        }
+      },
+      builder: (BuildContext context, UnityState state) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              UnityWidget(
                   onUnityViewCreated: onUnityCreated,
                   onUnityMessage: onUnityMessage),
-            ),
-            Expanded(
-              child: Container(
-                height: 100,
-                child: ListView.builder(
-                  itemCount: xrDraggableItems.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () async {
-                        await selectObject(
-                            xrDraggableItems[index].unityObjectType);
-                        /*  _unityBloc.add(SaveUnityObject(user.id,
-                            Random().nextInt(1000).toString(), 78.6, 78.6)); */
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 2,
-                              color: objectSelected ==
-                                      xrDraggableItems[index].unityObjectType
-                                  ? Colors.amberAccent
-                                  : Colors.transparent),
-                          color: AppColors.blue_transparent,
+              Positioned(
+                bottom: 5,
+                left: 0,
+                child: Container(
+                  color: Colors.transparent,
+                  height: 130,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    itemExtent: 80,
+                    itemCount: xrItems.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () async {
+                          await selectObject(xrItems[index].unityObjectType);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                width: objectSelected ==
+                                        xrItems[index].unityObjectType
+                                    ? 3
+                                    : 1,
+                                color: objectSelected ==
+                                        xrItems[index].unityObjectType
+                                    ? AppColors.blue_grey
+                                    : Colors.white),
+                            color: Colors.grey[200],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: xrItems[index].image,
+                          ),
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            xrDraggableItems[index].image,
-                            Text(xrDraggableItems[index].title)
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
+                      );
+                    },
+                    scrollDirection: Axis.horizontal,
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-        Positioned(
-          top: 16,
-          left: 16,
-          child: FloatingActionButton(
-              backgroundColor: AppColors.blue_grey,
-              child: Icon(Icons.account_balance_wallet_sharp),
-              onPressed: () {
-                showWallet(context, user);
-              }),
-        ),
-      ],
+              Positioned(
+                top: 16,
+                left: 16,
+                child: FloatingActionButton(
+                    backgroundColor: AppColors.blue_grey,
+                    child: Icon(Icons.account_balance_wallet_sharp),
+                    onPressed: () {
+                      showWallet(context, user);
+                    }),
+              ),
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: [
+              BottomNavigationBarItem(label: "Wallet", icon: Container()),
+              BottomNavigationBarItem(label: "Map", icon: Container())
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -169,23 +154,29 @@ class _HomePageState extends State<HomePage> {
   // Communication from Unity to Flutter
 /*   {
 type: "MESSAGE_TYPE",
-content: Content Object
+data: Content Object
 } */
   void onUnityMessage(controller, message) {
+    final user = context.bloc<AuthBloc>().state.user;
+    message = jsonDecode(message);
     print('Received message from unity: ${message.toString()}');
     Map<String, dynamic> data = message['data'];
-    switch (message['type']) {
+    switch (message['name']) {
       case "NEW_OBJECT":
         _unityBloc.add(SaveUnityObject(
-            data['id'],
-            data['content'],
-            data['location']['latitude'],
-            data['location']['longitude'],
-            data['location']['altitude']));
+            ObjectId().toHexString(),
+            user.id,
+            data['lat'],
+            data['lng'],
+            data['alt'],
+            data['rotX'],
+            data['rotY'],
+            data['rotZ']));
         break;
 
       case "CURRENT_LOCATION":
-        _unityBloc.add(LocationFromUnity(data['latitude'], data['longitude']));
+        _unityBloc.add(LocationFromUnity(
+            data['Latitude'], data['Longitude'], data["Altitude"]));
         break;
 
       case "REQUEST_OBJECT":

@@ -10,36 +10,34 @@ class UserModel extends ChangeNotifier {
 }
 
 class User {
-  String id;
-  DateTime date;
-  DateTime updateDate;
-  String name;
-  String email;
-  String walletAddress;
-  bool termsAgreed;
-  String locale;
-  String verifierId;
-  String imageUrl;
+  final String id;
+  final DateTime date;
+  final DateTime updateDate;
+  final String name;
+  final String email;
+  final String walletAddress;
+  final bool termsAgreed;
+  final String locale;
+  final String verifierId;
+  final String imageUrl;
 
   // only temp stored when doing sign up
 
-  User({this.id, this.name, this.email, this.imageUrl});
-
-  User.fromData(Map<String, dynamic> data) {
-    id = data['_id'];
-    name = data['name'];
-    walletAddress = data['walletAddress'];
-    date = data['date'];
-    updateDate = data['updatedAt'];
-    locale = data['locale'];
-    verifierId = data['verifierId'];
-    email = data['email'];
-    imageUrl = data['imageUrl'];
-  }
+  const User({
+    this.id,
+    this.name,
+    this.email,
+    this.imageUrl,
+    this.date,
+    this.updateDate,
+    this.walletAddress,
+    this.termsAgreed,
+    this.locale,
+    this.verifierId,
+  });
 
   toJSONEncodable() {
     Map<String, dynamic> m = new Map();
-
     m['email'] = email;
     m['imageUrl'] = imageUrl;
 
@@ -58,4 +56,7 @@ class User {
       "updateDate": this.updateDate,
     };
   }
+
+  /// Empty user which represents an unauthenticated user.
+  static const empty = const User(email: '', id: '', name: null);
 }

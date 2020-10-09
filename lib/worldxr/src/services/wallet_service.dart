@@ -1,7 +1,6 @@
-
-import 'package:dio/dio.dart';
 import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:fusecash/worldxr/src/data/wallet_object_state.dart';
+import 'package:dio/dio.dart';
 import 'package:wallet_core/wallet_core.dart';
 
 class WalletService {

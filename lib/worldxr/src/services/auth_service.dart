@@ -1,9 +1,8 @@
-
+import 'package:fusecash/worldxr/src/constants.dart';
+import 'package:fusecash/worldxr/src/data/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fusecash/worldxr/src/constants.dart';
-import 'package:fusecash/worldxr/src/data/user.dart';
 import 'package:json_store/json_store.dart';
 
 class AuthService extends ChangeNotifier {
@@ -21,10 +20,11 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<int> signUpWithVerifier(String email) async {
+  Future<int> signUpWithVerifier(
+      String email, String torusID, String verifierID) async {
     try {
-      Response response =
-          await Dio().post("$serverIp/api/user", data: {"email": email});
+      Response response = await Dio().post("$serverIp/api/user",
+          data: {"email": email, "verifierID": verifierID, "torusID": torusID});
       print(response.data);
       return response.statusCode;
     } catch (e) {
@@ -74,7 +74,16 @@ class AuthService extends ChangeNotifier {
 
   Future<User> getUser() async {
     Map<String, dynamic> userJson = await _jsonStore.getItem('user');
-    return User.fromData(userJson);
+    return User(
+        id: userJson['id'],
+        name: userJson['name'],
+        walletAddress: userJson['walletAddress'],
+        date: userJson['date'],
+        updateDate: userJson['updatedAt'],
+        locale: userJson['locale'],
+        verifierId: userJson['verifierId'],
+        email: userJson['email'],
+        imageUrl: userJson['imageUrl']);
   }
 
   Future<void> clearStoredData() async {

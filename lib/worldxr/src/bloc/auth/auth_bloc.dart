@@ -1,7 +1,9 @@
-
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:fusecash/worldxr/src/bloc/wallet/wallet_bloc.dart';
 import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:fusecash/worldxr/src/data/user.dart';
 import 'package:fusecash/worldxr/src/data/wallet_object_state.dart';
@@ -15,7 +17,13 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial());
+  AuthBloc({
+    @required WalletBloc walletBloc,
+  })  : assert(walletBloc != null),
+        _walletBloc = walletBloc,
+        super(AuthState.unknown());
+
+  WalletBloc _walletBloc;
   AuthService get _authService => locator.get();
   WalletService get _walletService => locator.get();
   LocalAuthentication _localAuthentication = LocalAuthentication();
@@ -50,11 +58,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           WalletObjectState walletObjectState =
               await _walletService.retrieveWalletState(privateKey);
 
-          yield SignedInState(user, privateKey, walletObjectState);
+          _walletBloc.add(SetWallet(walletObjectState));
+
+          yield AuthState.authenticated(user, privateKey);
         }
       } else {
         _authService.clearStoredData();
-        yield SignedOutState();
+        yield AuthState.unauthenticated();
         return;
       }
     }
@@ -75,19 +85,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       WalletObjectState walletObjectState =
           await _walletService.retrieveWalletState(privateKey);
 
-      yield SignedInState(
+      _walletBloc.add(SetWallet(walletObjectState));
+
+      yield AuthState.authenticated(
           User(email: loginInfo['email'], imageUrl: loginInfo['picture']),
-          privateKey,
-          walletObjectState);
+          privateKey);
     }
 
     if (event is SignOut) {
       await _authService.clearStoredData();
-      yield SignedOutState();
+      yield AuthState.unauthenticated();
     }
 
     if (event is SignUpWithVerifier) {
-      yield AuthLoadingState();
+      yield AuthState.loading();
       print("Signing up");
       // set Torus verifier details
       setTorusVerifierDetails(event.verifier);
@@ -111,15 +122,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       WalletObjectState walletObjectState =
           await _walletService.retrieveWalletState(privateKey);
 
+      _walletBloc.add(SetWallet(walletObjectState));
       // Save user info to backend
-      int resStatusCode =
-          await _authService.signUpWithVerifier(loginInfo['email']);
+      int resStatusCode = await _authService.signUpWithVerifier(
+          loginInfo['email'], loginInfo['id'], "google");
       if (resStatusCode != 200) {
-        yield AuthErrorState();
         return;
       }
 
-      yield SignedUpState(privateKey, user, walletObjectState);
+      yield AuthState.authenticated(user, privateKey);
     }
   }
 
