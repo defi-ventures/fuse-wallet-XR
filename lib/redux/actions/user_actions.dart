@@ -314,6 +314,8 @@ ThunkAction restoreWalletCall(
   };
 }
 
+// TODO: Set appName parameter to World XR firebase app name
+
 ThunkAction setDeviceId(bool reLogin) {
   return (Store store) async {
     final logger = await AppFactory().getLogger('action');

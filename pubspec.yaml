@@ -64,7 +64,7 @@ dependencies:
 
   # WorldXR dependencies
     # Unity
-  flutter_unity_widget: ^0.1.6+8
+  flutter_unity_widget: ^2.0.0+2
 
   # Utilities
   get_it: ^3.1.0

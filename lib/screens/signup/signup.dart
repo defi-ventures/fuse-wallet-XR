@@ -1,19 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:fusecash/generated/i18n.dart';
-import 'package:fusecash/models/app_state.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:country_code_picker/country_codes.dart';
-import 'package:fusecash/services.dart';
-import 'package:fusecash/utils/constans.dart';
 import 'package:fusecash/widgets/main_scaffold.dart';
-import 'package:fusecash/widgets/primary_button.dart';
 import 'package:fusecash/widgets/signup_dialog.dart';
-import 'package:fusecash/models/views/onboard.dart';
-import 'package:fusecash/widgets/snackbars.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -21,19 +13,20 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final fullNameController = TextEditingController(text: "");
-  final emailController = TextEditingController(text: "");
-  final phoneController = TextEditingController(text: "");
-  final _formKey = GlobalKey<FormState>();
+  // final fullNameController = TextEditingController(text: "");
+  // final emailController = TextEditingController(text: "");
+  // final phoneController = TextEditingController(text: "");
+  //final phoneFocus = FocusNode();
+  //final _formKey = GlobalKey<FormState>();
   CountryCode countryCode = CountryCode(dialCode: '‎+1', code: 'US');
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_updateCountryCode);
+    // WidgetsBinding.instance.addPostFrameCallback(_updateCountryCode);
     super.initState();
   }
 
-  _updateCountryCode(_) {
+  /*  _updateCountryCode(_) {
     Locale myLocale = Localizations.localeOf(context);
     if (myLocale.countryCode != null) {
       Map localeData = codes.firstWhere(
@@ -47,9 +40,9 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     }
   }
-
+ */
   void onPressed(Function(CountryCode, String) signUp) {
-    phoneNumberUtil
+    /*  phoneNumberUtil
         .parse('${countryCode.dialCode}${phoneController.text}')
         .then((value) {
       signUp(countryCode, phoneController.text);
@@ -59,68 +52,89 @@ class _SignupScreenState extends State<SignupScreen> {
           duration: Duration(seconds: 3),
           context: context,
           margin: EdgeInsets.only(top: 8, right: 8, left: 8, bottom: 120));
-    });
+    }); */
   }
 
   @override
   Widget build(BuildContext context) {
     Segment.screen(screenName: '/signup-screen');
     return MainScaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        withPadding: true,
-        title: I18n.of(context).sign_up,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 20.0, right: 20.0, bottom: 20.0, top: 0.0),
-                  child: Text(I18n.of(context).enter_phone_number,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      withPadding: true,
+      title: I18n.of(context).sign_up,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                    left: 20.0, right: 20.0, bottom: 20.0, top: 0.0),
+                child: Text(I18n.of(context).enter_phone_number,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                    )),
+              ),
+              Container(
+                width: 180.0,
+                height: 35.0,
+                decoration: BoxDecoration(
+                  color: Color(0xFFeaeaea),
+                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SignupDialog();
+                            });
+                        Segment.track(
+                            eventName:
+                                "Wallet: opened modal - why do we need this");
+                      },
+                      child: Center(
+                        child: Text(
+                          I18n.of(context).why_do_we_need_this,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontSize: 15,
+                              fontWeight: FontWeight.normal),
+                        ),
                       )),
                 ),
-                Container(
-                  width: 180.0,
-                  height: 35.0,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFeaeaea),
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SignupDialog();
-                              });
-                          Segment.track(
-                              eventName:
-                                  "Wallet: opened modal - why do we need this");
-                        },
-                        child: Center(
-                          child: Text(
-                            I18n.of(context).why_do_we_need_this,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        )),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
-        ],
-        footer: Padding(
+        ),
+        Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: GoogleSignInButton(
+                    darkMode: true,
+                    text: "Continue With Google",
+                    onPressed: () {}),
+              ),
+              if (Platform.isIOS)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: AppleSignInButton(
+                      style: AppleButtonStyle.black,
+                      text: "Continue With Apple",
+                      onPressed: () {}),
+                ),
+            ],
+          ),
+        ),
+      ],
+      /* footer: Padding(
           padding: EdgeInsets.only(top: 10, left: 30, right: 30),
           child: Form(
             key: _formKey,
@@ -170,9 +184,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         Expanded(
                           child: TextFormField(
+                            focusNode: phoneFocus,
                             controller: phoneController,
                             keyboardType: TextInputType.number,
-                            autofocus: true,
                             validator: (String value) => value.isEmpty
                                 ? "Please enter mobile number"
                                 : null,
@@ -227,6 +241,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ],
             ),
           ),
-        ));
+        ) */
+    );
   }
 }

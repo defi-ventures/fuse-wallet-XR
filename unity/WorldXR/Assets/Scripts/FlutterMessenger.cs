@@ -34,30 +34,35 @@ public class FlutterMessenger : MonoBehaviour
 
     public static void SendMessage(UnityMessage message)
     {
-        print("sending message to Flutter, FlutterMessenger");
-        string jsondata = JsonConvert.SerializeObject(message,  Formatting.Indented, new JsonSerializerSettings() {
-        PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+         print("sending message to Flutter, FlutterMessenger");
+        string jsondata=JsonConvert.SerializeObject(message);
         _messenger.SendMessageToFlutter(jsondata);
     }
 
     public static void SaveObject(GameObject gameObject, Location location)
     {
-        var message = new UnityMessage()
+        
+        SceneObject sceneObject=new SceneObject();
+        sceneObject.name=gameObject.name;
+        sceneObject.alt=location.Altitude;
+        sceneObject.lng=location.Longitude;
+        sceneObject.lat=location.Latitude;
+        sceneObject.rotX=gameObject.transform.rotation.x;
+        sceneObject.rotY=gameObject.transform.rotation.y;
+        sceneObject.rotZ=gameObject.transform.rotation.z;
+
+        UnityMessage message=new UnityMessage()
         {
             name = NewObject,
-            data = JObject.FromObject(new ARObject()
-            {
-                id = null,
-                content = gameObject,
-                location = ARObjectLocation.FromLocationObj(location)
-            }),
-            callBack = s => ReceiveMessage(s)
+            data = JObject.FromObject(sceneObject),
+            callBack= s => ReceiveMessage(s)
         };
 
-        print("sending message to flutter, save object");
 
         SendMessage(message);
+
+        string jsonobject = JsonUtility.ToJson(sceneObject);
+        PlayerPrefs.SetString(sceneObject.id, jsonobject);
     }
 
     public static void SendUserLocation(Location location)
@@ -68,6 +73,7 @@ public class FlutterMessenger : MonoBehaviour
             data = JObject.FromObject(ARObjectLocation.FromLocationObj(location)),
             callBack = s => ReceiveMessage(s)
         };
+       
 
         SendMessage(message);
     }

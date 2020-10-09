@@ -28,6 +28,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
+using UnityEngine;
 
 /// <summary>
 /// Adding this post build script to Unity project enables the flutter-unity-widget to access it
@@ -39,7 +40,12 @@ public static class XcodePostBuild
     /// The identifier added to touched file to avoid double edits when building to existing directory without
     /// replace existing content.
     /// </summary>
-    private const string TouchedMarker = "https://github.com/snowballdigital/flutter-unity-view-widget";
+    private const string TouchedMarker = "https://github.com/juicycleff/flutter-unity-view-widget";
+
+    private static string flutterAppPath = "../../ios";
+
+    // Enabled this for iOS plugin export and disable for non plugin export.
+    private static bool isBuildingPlugin = false;
 
     [PostProcessBuild]
     public static void OnPostBuild(BuildTarget target, string pathToBuiltProject)
@@ -52,6 +58,61 @@ public static class XcodePostBuild
         PatchUnityNativeCode(pathToBuiltProject);
 
         UpdateUnityProjectFiles(pathToBuiltProject);
+
+        if(isBuildingPlugin)
+        {
+            UpdateBuildSettings(pathToBuiltProject);
+        }
+    }
+
+    /// <summary>
+    /// We need to set particular build settings on the UnityFramework target.
+    /// This includes:
+    ///   - skip_install = NO (It is YES by default)
+    /// </summary>
+    /// <param name="pathToBuildProject"></param>
+    private static void UpdateBuildSettings(string pathToBuildProject)
+    {
+        var pbx = new PBXProject();
+        var pbxPath = Path.Combine(pathToBuildProject, "Unity-iPhone.xcodeproj/project.pbxproj");
+        pbx.ReadFromFile(pbxPath);
+
+        var targetGuid = pbx.TargetGuidByName("UnityFramework");
+
+        // Set skip_install to NO 
+        pbx.SetBuildProperty(targetGuid, "SKIP_INSTALL", "NO");
+
+        // Persist changes
+        pbx.WriteToFile(pbxPath);
+    }
+
+    /// <summary>
+    /// Make necessary changes to Unity build output that enables it to be embedded into existing Xcode project.
+    /// </summary>
+    private static void PatchRemoveTargetMembership(string pathToBuiltProject)
+    {
+
+        var pbx2 = new PBXProject();
+        var pbxPath2 = Path.Combine(pathToBuiltProject, "Unity-iPhone.xcodeproj/project.pbxproj");
+        pbx2.ReadFromFile(pbxPath2);
+
+        var pbx = new PBXProject();
+        var pbxPath = Path.Combine(flutterAppPath, "Runner.xcodeproj/project.pbxproj");
+        pbx.ReadFromFile(pbxPath);
+
+        // Add unityLibrary/Data
+        var targetGuid = pbx2.TargetGuidByName("UnityFramework");
+
+        var fileGuid = pbx.AddFolderReference(Path.Combine(pathToBuiltProject, "Data"), "Data");
+
+
+        string appTargetGUID = pbx.TargetGuidByName("Runner");
+        Debug.Log(appTargetGUID);
+        pbx.AddFrameworkToProject(appTargetGUID, "UnityFramework", false);
+        // pbx.AddFileToBuild(targetGuid, fileGuid);
+        pbx.WriteToFile(pbxPath);
+
+        Debug.Log("Build mang console");
     }
 
     /// <summary>
@@ -63,7 +124,8 @@ public static class XcodePostBuild
         var pbxPath = Path.Combine(pathToBuiltProject, "Unity-iPhone.xcodeproj/project.pbxproj");
         pbx.ReadFromFile(pbxPath);
 
-        // Add UnityExport/Data
+        // PatchRemoveTargetMembership(pathToBuiltProject);
+        // Add unityLibrary/Data
         var targetGuid = pbx.TargetGuidByName("UnityFramework");
         var fileGuid = pbx.AddFolderReference(Path.Combine(pathToBuiltProject, "Data"), "Data");
         pbx.AddFileToBuild(targetGuid, fileGuid);
@@ -140,6 +202,7 @@ public static class XcodePostBuild
                         "",
                         "// Added by " + TouchedMarker,
                         "@protocol UnityEventListener <NSObject>",
+                        "- (void)onSceneLoaded:(NSString *)name buildIndex:(NSInteger *)bIndex loaded:(bool *)isLoaded valid:(bool *)IsValid;",
                         "- (void)onMessage:(NSString *)message;",
                         "@end",
                         "",
@@ -169,6 +232,7 @@ public static class XcodePostBuild
 
                     return new string[]
                     {
+                        "@property (nonatomic, copy)                                 void(^unitySceneLoadedHandler)(const char* name, const int* buildIndex, const bool* isLoaded, const bool* IsValid);",
                         "@property (nonatomic, copy)                                 void(^unityMessageHandler)(const char* message);",
                     };
                 }
@@ -278,6 +342,12 @@ public static class XcodePostBuild
                     "        GetAppController().unityMessageHandler(message);",
                     "    }",
                     "}",
+                    "extern \"C\" void onUnitySceneLoaded(const char* name, const int* buildIndex, const bool* isLoaded, const bool* IsValid)",
+                    "{",
+                    "    if (GetAppController().unitySceneLoadedHandler) {",
+                    "        GetAppController().unitySceneLoadedHandler(name, buildIndex, isLoaded, IsValid);",
+                    "    }",
+                    "}",
                     line,
 
 				};
@@ -353,6 +423,7 @@ public static class XcodePostBuild
                     return new string[]
                     {
                         "@synthesize unityMessageHandler     = _unityMessageHandler;",
+                        "@synthesize unitySceneLoadedHandler     = _unitySceneLoadedHandler;",
                     };
                 }
 
