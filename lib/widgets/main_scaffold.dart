@@ -14,6 +14,7 @@ class MainScaffold extends StatelessWidget {
       double padding,
       this.key,
       this.backgroundColor,
+      this.gradient,
       this.expandedHeight})
       : sliverList = sliverList ?? new List<Widget>(),
         children = children ?? new List<Widget>(),
@@ -32,6 +33,7 @@ class MainScaffold extends StatelessWidget {
   final double padding;
   final Key key;
   final Color backgroundColor;
+  final Gradient gradient;
   final double expandedHeight;
   final double titleFontSize;
   final List<Widget> actions;
@@ -45,32 +47,46 @@ class MainScaffold extends StatelessWidget {
       pinned: true,
       actions: actions,
       flexibleSpace: FlexibleSpaceBar(
-        title: Container(
-          child: Text(title,
-              softWrap: true,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: titleFontSize,
-                  fontWeight: FontWeight.w800)),
-        ),
+        title: title != null
+            ? Container(
+                decoration: BoxDecoration(
+                    gradient: gradient ??
+                        LinearGradient(colors: [Colors.white, Colors.white])),
+                child: Text(title,
+                    softWrap: true,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: titleFontSize,
+                        fontWeight: FontWeight.w800)),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                    gradient: gradient ??
+                        LinearGradient(colors: [Colors.white, Colors.white])),
+              ),
         centerTitle: true,
         collapseMode: CollapseMode.parallax,
       ),
       iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
+      backgroundColor: backgroundColor ?? Colors.transparent,
       brightness: Brightness.light,
     );
   }
 
-  CustomScrollView scrollView(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        appBar(context),
-        ...sliverList,
-        SliverList(
-          delegate: SliverChildListDelegate(children),
-        ),
-      ],
+  Widget scrollView(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          gradient:
+              gradient ?? LinearGradient(colors: [Colors.white, Colors.white])),
+      child: CustomScrollView(
+        slivers: <Widget>[
+          appBar(context),
+          ...sliverList,
+          SliverList(
+            delegate: SliverChildListDelegate(children),
+          ),
+        ],
+      ),
     );
   }
 

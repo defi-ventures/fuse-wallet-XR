@@ -18,6 +18,7 @@ import 'package:fusecash/utils/biometric_local_auth.dart';
 import 'package:fusecash/utils/constans.dart';
 import 'package:fusecash/utils/contacts.dart';
 import 'package:fusecash/utils/format.dart';
+import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
@@ -94,7 +95,7 @@ class ReLogin {
   ReLogin();
 }
 
-class LoginRequest {
+class PhoneLoginRequest {
   final CountryCode countryCode;
   final String phoneNumber;
   final PhoneCodeSent codeSent;
@@ -102,7 +103,7 @@ class LoginRequest {
   final PhoneVerificationFailed verificationFailed;
   final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout;
 
-  LoginRequest(
+  PhoneLoginRequest(
       {@required this.countryCode,
       @required this.phoneNumber,
       @required this.codeSent,
@@ -111,18 +112,28 @@ class LoginRequest {
       @required this.codeAutoRetrievalTimeout});
 }
 
-class LoginRequestSuccess {
+class PhoneLoginRequestSuccess {
   final CountryCode countryCode;
   final String phoneNumber;
   final String displayName;
   final String email;
   final String normalizedPhoneNumber;
-  LoginRequestSuccess(
+  PhoneLoginRequestSuccess(
       {this.countryCode,
       this.phoneNumber,
       this.displayName,
       this.email,
       this.normalizedPhoneNumber});
+}
+
+class VerifierLoginRequest {
+  final Verifier verifier;
+
+  VerifierLoginRequest(this.verifier);
+}
+
+class VerifierLoginRequestSuccess {
+  VerifierLoginRequestSuccess();
 }
 
 class SetIsoCode {

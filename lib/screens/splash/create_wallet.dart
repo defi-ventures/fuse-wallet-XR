@@ -7,7 +7,6 @@ import 'package:fusecash/models/app_state.dart';
 import 'package:fusecash/models/views/splash.dart';
 import 'package:fusecash/screens/routes.gr.dart';
 import 'package:fusecash/widgets/primary_button.dart';
-import 'package:fusecash/widgets/transparent_button.dart';
 
 class WarnBeforeReCreation extends StatefulWidget {
   @override
@@ -107,79 +106,21 @@ class _CreateWalletState extends State<CreateWallet> {
                 PrimaryButton(
                   fontSize: 16,
                   labelFontWeight: FontWeight.normal,
-                  disabled: isPrimaryPreloading,
+                  disabled: false,
                   label: viewModel.isLoggedOut
                       ? I18n.of(context).login
-                      : I18n.of(context).create_new_wallet,
+                      : "Continue",
                   onPressed: () async {
                     if (viewModel.isLoggedOut) {
                       viewModel.loginAgain();
                       ExtendedNavigator.root.replace(Routes.homePage);
                     } else {
                       viewModel.setDeviceIdCall();
-                      viewModel.createLocalAccount(() {
-                        setState(() {
-                          isPrimaryPreloading = false;
-                        });
-                        ExtendedNavigator.root.pushSignupScreen();
-                      });
-                      setState(() {
-                        isPrimaryPreloading = true;
-                      });
+                      ExtendedNavigator.root.pushSignupScreen();
                     }
                   },
-                  preload: isPrimaryPreloading,
+                  preload: false,
                 ),
-                Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: viewModel.isLoggedOut
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              TransparentButton(
-                                  fontSize: 14,
-                                  label: I18n.of(context).restore_backup,
-                                  onPressed: () async {
-                                    ExtendedNavigator.root.pushRecoveryPage();
-                                  }),
-                              Text(
-                                I18n.of(context).or,
-                                style: TextStyle(color: Colors.grey[400]),
-                              ),
-                              TransparentButton(
-                                  fontSize: 14,
-                                  label: I18n.of(context).create__wallet,
-                                  onPressed: () async {
-                                    bool result = await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return WarnBeforeReCreation();
-                                      },
-                                    );
-                                    if (result) {
-                                      viewModel.setDeviceIdCall();
-                                      viewModel.createLocalAccount(() {
-                                        setState(() {
-                                          isTransparentPreloading = false;
-                                        });
-                                        ExtendedNavigator.root
-                                            .pushSignupScreen();
-                                      });
-                                      setState(() {
-                                        isTransparentPreloading = true;
-                                      });
-                                    }
-                                  },
-                                  preload: isTransparentPreloading)
-                            ],
-                          )
-                        : TransparentButton(
-                            fontSize: 16,
-                            label: I18n.of(context).restore_from_backup,
-                            onPressed: () async {
-                              ExtendedNavigator.root.pushRecoveryPage();
-                            }))
               ],
             ),
           );

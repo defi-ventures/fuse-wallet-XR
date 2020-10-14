@@ -9,6 +9,7 @@ import 'package:fusecash/redux/state/store.dart';
 import 'package:fusecash/screens/routes.gr.dart';
 import 'package:fusecash/services.dart';
 import 'package:fusecash/utils/biometric_local_auth.dart';
+import 'package:fusecash/worldxr/src/constants.dart';
 import 'package:redux/redux.dart';
 import 'package:fusecash/models/app_state.dart';
 import 'package:fusecash/redux/actions/user_actions.dart';
@@ -23,7 +24,8 @@ class OnboardViewModel extends Equatable {
   final bool loginVerifySuccess;
   final bool isLoginRequest;
   final bool isVerifyRequest;
-  final Function(CountryCode, String) signUp;
+  final Function(CountryCode, String) phoneSignUp;
+  final Function(Verifier) verifierSignUp;
   final Function(String, String) verify;
   final Function(String) setPincode;
   final Function(String) setDisplayName;
@@ -41,7 +43,8 @@ class OnboardViewModel extends Equatable {
       this.credentials,
       this.loginRequestSuccess,
       this.loginVerifySuccess,
-      this.signUp,
+      this.phoneSignUp,
+      this.verifierSignUp,
       this.verify,
       this.setPincode,
       this.setDisplayName,
@@ -122,14 +125,17 @@ class OnboardViewModel extends Equatable {
         isLoginRequest: store.state.userState.isLoginRequest,
         signupException: store.state.userState.signupException,
         verifyException: store.state.userState.verifyException,
-        signUp: (CountryCode countryCode, String phoneNumber) {
-          store.dispatch(LoginRequest(
+        phoneSignUp: (CountryCode countryCode, String phoneNumber) {
+          store.dispatch(PhoneLoginRequest(
               countryCode: countryCode,
               phoneNumber: phoneNumber,
               codeSent: codeSent,
               codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
               verificationCompleted: verificationCompleted,
               verificationFailed: verificationFailed));
+        },
+        verifierSignUp: (Verifier verifier) {
+          store.dispatch(VerifierLoginRequest(verifier));
         },
         verify: (verificationCode, verificationId) {
           store.dispatch(VerifyRequest(
