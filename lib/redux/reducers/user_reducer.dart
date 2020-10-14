@@ -8,7 +8,8 @@ final userReducers = combineReducers<UserState>([
       _getWalletAddressesSuccess),
   TypedReducer<UserState, RestoreWalletSuccess>(_restoreWalletSuccess),
   TypedReducer<UserState, CreateLocalAccountSuccess>(_createNewWalletSuccess),
-  TypedReducer<UserState, LoginRequestSuccess>(_loginSuccess),
+  TypedReducer<UserState, PhoneLoginRequestSuccess>(_phoneLoginSuccess),
+  TypedReducer<UserState, VerifierLoginRequestSuccess>(_verifierLoginSuccess),
   TypedReducer<UserState, LoginVerifySuccess>(_loginVerifySuccess),
   TypedReducer<UserState, LogoutRequestSuccess>(_logoutSuccess),
   TypedReducer<UserState, SyncContactsProgress>(_syncContactsProgress),
@@ -113,13 +114,20 @@ UserState _createNewWalletSuccess(
       accountAddress: action.accountAddress);
 }
 
-UserState _loginSuccess(UserState state, LoginRequestSuccess action) {
+UserState _phoneLoginSuccess(UserState state, PhoneLoginRequestSuccess action) {
   return state.copyWith(
       countryCode: action.countryCode.dialCode,
       isoCode: action.countryCode.code,
       normalizedPhoneNumber: action.normalizedPhoneNumber,
       phoneNumber: action.phoneNumber,
       loginRequestSuccess: true);
+}
+
+//TODO: add user state properties from verifier login
+
+UserState _verifierLoginSuccess(
+    UserState state, VerifierLoginRequestSuccess action) {
+  return state.copyWith(loginRequestSuccess: true);
 }
 
 UserState _setVerificationId(UserState state, SetVerificationId action) {
@@ -186,11 +194,13 @@ UserState _justInstalled(UserState state, JustInstalled action) {
 }
 
 UserState _setIsLoginRequest(UserState state, SetIsLoginRequest action) {
-  return state.copyWith(isLoginRequest: action.isLoading, signupException: action.message);
+  return state.copyWith(
+      isLoginRequest: action.isLoading, signupException: action.message);
 }
 
 UserState _setIsVerifyRequest(UserState state, SetIsVerifyRequest action) {
-  return state.copyWith(isVerifyRequest: action.isLoading, verifyException: action.message);
+  return state.copyWith(
+      isVerifyRequest: action.isLoading, verifyException: action.message);
 }
 
 UserState _deviceIdSuccess(UserState state, DeviceIdSuccess action) {
