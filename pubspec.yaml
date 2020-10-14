@@ -100,7 +100,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter_icons:
-  image_path: assets/images/icon_app.jpg
+  image_path: assets/images/gofindxr_logo.png
   android: true
   ios: true
 flutter:
