@@ -1,5 +1,10 @@
 PODS:
   - Analytics (4.0.1)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
@@ -96,6 +101,9 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
+  - google_sign_in (0.0.1):
+    - Flutter
+    - GoogleSignIn (~> 5.0)
   - GoogleDataTransport (7.3.0):
     - nanopb (~> 1.30906.0)
   - GoogleMaps (3.9.0):
@@ -103,6 +111,10 @@ PODS:
   - GoogleMaps/Base (3.9.0)
   - GoogleMaps/Maps (3.9.0):
     - GoogleMaps/Base
+  - GoogleSignIn (5.0.2):
+    - AppAuth (~> 1.2)
+    - GTMAppAuth (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -120,7 +132,14 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
+  - GTMAppAuth (1.0.0):
+    - AppAuth/Core (~> 1.0)
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.4.0):
+    - GTMSessionFetcher/Full (= 1.4.0)
   - GTMSessionFetcher/Core (1.4.0)
+  - GTMSessionFetcher/Full (1.4.0):
+    - GTMSessionFetcher/Core (= 1.4.0)
   - image_picker (0.0.1):
     - Flutter
   - libphonenumber (0.0.1):
@@ -203,6 +222,7 @@ DEPENDENCIES:
   - flutter_unity_widget (from `.symlinks/plugins/flutter_unity_widget/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - libphonenumber (from `.symlinks/plugins/libphonenumber/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
@@ -218,6 +238,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Analytics
+    - AppAuth
     - BestLogger
     - BigInt
     - Branch
@@ -235,7 +256,9 @@ SPEC REPOS:
     - FMDB
     - GoogleDataTransport
     - GoogleMaps
+    - GoogleSignIn
     - GoogleUtilities
+    - GTMAppAuth
     - GTMSessionFetcher
     - libPhoneNumber-iOS
     - MTBBarcodeScanner
@@ -283,6 +306,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_webview_plugin/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  google_sign_in:
+    :path: ".symlinks/plugins/google_sign_in/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   libphonenumber:
@@ -308,6 +333,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Analytics: ebdc0c3ed93684d10c898f57886e0ce7fbecc240
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   BestLogger: 70475db073dfab3ec1ba9b58b0bb78126b068eee
   BigInt: f668a80089607f521586bbe29513d708491ef2f7
@@ -338,9 +364,12 @@ SPEC CHECKSUMS:
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleDataTransport: e85fb700c9b027079ce182c3d08e12e0f9618bb4
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
+  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
+  GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e

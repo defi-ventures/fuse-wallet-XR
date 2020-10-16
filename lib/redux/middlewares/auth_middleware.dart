@@ -78,15 +78,22 @@ Middleware<AppState> _createVerifierLoginRequestMiddleware() {
         // trigger Torus Login
         Map<dynamic, dynamic> loginInfo = await TorusDirect.triggerLogin();
 
-        /* EmailAuthCredential credential = store.state.userState.credentials;
-        if (credential == null) {
-          credential = PhoneAuthProvider.credential(
-              verificationId: action.verificationId,
-              smsCode: action.verificationCode);
-        }
-        final User user =
-            (await firebaseAuth.signInWithCredential(credential)).user; */
+        final AuthCredential credential = GoogleAuthProvider.credential(
+            accessToken: loginInfo['accessToken'],
+            idToken: loginInfo['idToken']);
 
+        final User user =
+            (await firebaseAuth.signInWithCredential(credential)).user;
+        final User currentUser = firebaseAuth.currentUser;
+        assert(user.uid == currentUser.uid);
+        final String accountAddress = store.state.userState.accountAddress;
+        final String identifier = store.state.userState.identifier;
+        String token = await user.getIdToken();
+        String jwtToken = await api.login(token, accountAddress, identifier);
+        store.dispatch(new LoginVerifySuccess(jwtToken));
+        store.dispatch(SetIsVerifyRequest(isLoading: false));
+        store.dispatch(segmentTrackCall("Wallet: verified with social"));
+        ExtendedNavigator.root.pushUserNameScreen();
       } catch (e, s) {
         store.dispatch(SetIsLoginRequest(isLoading: false));
         logger.severe('ERROR - LoginRequest $e');
@@ -150,11 +157,11 @@ setTorusVerifierDetails(Verifier verifier) async {
       TorusDirect.setVerifierDetails(
           LoginType.installed.value,
           VerifierType.singleLogin.value,
-          "tokenizer-google-ios",
-          "653095671042-san67chucuujmjoo218khq2rb92bh80d.apps.googleusercontent.com",
+          "xrweb-google",
+          "1012100444286-ivosqf708t7vqakgdpv7m2egde8a6oop.apps.googleusercontent.com",
           LoginProvider.google.value,
-          "tokenizer-google-ios",
-          "com.googleusercontent.apps.653095671042-san67chucuujmjoo218khq2rb92bh80d:/oauthredirect");
+          "xrweb-google",
+          "com.googleusercontent.apps.1012100444286-ivosqf708t7vqakgdpv7m2egde8a6oop:/oauthredirect");
       break;
     case Verifier.facebook:
       break;

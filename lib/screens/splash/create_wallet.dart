@@ -6,7 +6,9 @@ import 'package:fusecash/generated/i18n.dart';
 import 'package:fusecash/models/app_state.dart';
 import 'package:fusecash/models/views/splash.dart';
 import 'package:fusecash/screens/routes.gr.dart';
+import 'package:fusecash/style/style.dart';
 import 'package:fusecash/widgets/primary_button.dart';
+import 'package:fusecash/widgets/transparent_button.dart';
 
 class WarnBeforeReCreation extends StatefulWidget {
   @override
@@ -106,10 +108,11 @@ class _CreateWalletState extends State<CreateWallet> {
                 PrimaryButton(
                   fontSize: 16,
                   labelFontWeight: FontWeight.normal,
+                  colors: [AppColors.dark_blue, AppColors.purple],
                   disabled: false,
-                  label: viewModel.isLoggedOut
-                      ? I18n.of(context).login
-                      : "Continue",
+                  labalColor: Colors.white,
+                  label:
+                      viewModel.isLoggedOut ? I18n.of(context).login : "Login",
                   onPressed: () async {
                     if (viewModel.isLoggedOut) {
                       viewModel.loginAgain();
@@ -121,6 +124,21 @@ class _CreateWalletState extends State<CreateWallet> {
                   },
                   preload: false,
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TransparentButton(
+                    label: "Create Wallet",
+                    onPressed: () async {
+                      if (viewModel.isLoggedOut) {
+                        viewModel.loginAgain();
+                        ExtendedNavigator.root.replace(Routes.homePage);
+                      } else {
+                        viewModel.setDeviceIdCall();
+                        ExtendedNavigator.root.pushSignupScreen();
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           );

@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import GoogleMaps
+import torus_direct
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -12,5 +13,10 @@ import GoogleMaps
     InitArgs(CommandLine.argc, CommandLine.unsafeArgv)
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+   override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    TorusSwiftDirectSDK.handle(url: url)
+    return true
   }
 }

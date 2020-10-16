@@ -32,7 +32,7 @@ class PrimaryButton extends StatelessWidget {
       opacity: disabled ? opacity : 1,
       child: Container(
         width: width ?? 255.0,
-        height: height ?? 50.0,
+        height: height ?? 60.0,
         decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,

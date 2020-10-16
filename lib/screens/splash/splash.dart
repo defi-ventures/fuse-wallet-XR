@@ -80,14 +80,17 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: Container(
                         child: Stack(
                           children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  bottom: 100, left: 20, right: 20),
-                              child: FlareActor(
-                                "assets/images/animation.flr",
-                                alignment: Alignment.center,
-                                fit: BoxFit.contain,
-                                controller: _slideController,
+                            Container(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: 100, left: 20, right: 20, top: 100),
+                                child: Image.asset(
+                                  "assets/images/gofindxr_logo.png",
+                                  height: 250,
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                             PageView.builder(
