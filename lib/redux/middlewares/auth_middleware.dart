@@ -71,7 +71,7 @@ Middleware<AppState> _createVerifierLoginRequestMiddleware() {
     final logger = await AppFactory().getLogger('action');
     if (action is VerifierLoginRequest) {
       try {
-        store.dispatch(SetIsLoginRequest(isLoading: true));
+        /*  store.dispatch(SetIsLoginRequest(isLoading: true));
         // set Torus verifier details
         await setTorusVerifierDetails(action.verifier);
 
@@ -83,13 +83,18 @@ Middleware<AppState> _createVerifierLoginRequestMiddleware() {
             idToken: loginInfo['idToken']);
 
         final User user =
-            (await firebaseAuth.signInWithCredential(credential)).user;
+            (await firebaseAuth.signInWithCredential(credential)).user; */
+        final User user = (await firebaseAuth.signInWithEmailAndPassword(
+                email: 'worldxrtest@gmail.com', password: 'worldxr'))
+            .user;
         final User currentUser = firebaseAuth.currentUser;
         assert(user.uid == currentUser.uid);
         final String accountAddress = store.state.userState.accountAddress;
         final String identifier = store.state.userState.identifier;
         String token = await user.getIdToken();
-        String jwtToken = await api.login(token, accountAddress, identifier);
+        String jwtToken = await api.login(token, accountAddress, identifier,
+            appName: 'WorldXR');
+
         store.dispatch(new LoginVerifySuccess(jwtToken));
         store.dispatch(SetIsVerifyRequest(isLoading: false));
         store.dispatch(segmentTrackCall("Wallet: verified with social"));
@@ -127,7 +132,8 @@ Middleware<AppState> _createVerifyPhoneNumberMiddleware() {
         final String accountAddress = store.state.userState.accountAddress;
         final String identifier = store.state.userState.identifier;
         String token = await user.getIdToken();
-        String jwtToken = await api.login(token, accountAddress, identifier);
+        String jwtToken = await api.login(token, accountAddress, identifier,
+            appName: 'WorldXR');
         store.dispatch(new LoginVerifySuccess(jwtToken));
         store.dispatch(SetIsVerifyRequest(isLoading: false));
         store.dispatch(segmentTrackCall("Wallet: verified phone number"));

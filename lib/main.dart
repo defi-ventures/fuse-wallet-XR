@@ -30,7 +30,7 @@ void main() async {
   Store<AppState> store = await AppFactory().getStore();
   runZonedGuarded<Future<void>>(
       () async => runApp(CustomTheme(
-            initialThemeKey: MyThemeKeys.DEFAULT,
+            initialThemeKey: MyThemeKeys.WORLD_XR,
             child: new MyApp(store: store),
           )), (Object error, StackTrace stackTrace) async {
     try {
@@ -82,7 +82,8 @@ class _MyAppState extends State<MyApp> {
       if (diff.inDays <= 1) {
         String token = await firebaseAuth.currentUser.getIdToken(true);
         logger.info('forceRefreshJWT: $jwtToken');
-        jwtToken = await api.login(token, accoutAddress, identifier);
+        jwtToken = await api.login(token, accoutAddress, identifier,
+            appName: 'WorldXR');
       }
 
       logger.info('JWT: $jwtToken');
